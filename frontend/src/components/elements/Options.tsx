@@ -17,7 +17,7 @@ export const Options = () => {
     const formData = new FormData()
     formData.append("image", file)
 
-    fetch("http://localhost:5500/upload", {
+    fetch("/upload", {
       method: "POST",
       body: formData,
     }).then(res => res.json())
@@ -42,7 +42,7 @@ export const Options = () => {
     formData.append("height", String(height));
 
     try {
-      const res = await fetch("http://localhost:5500/resize", {
+      const res = await fetch("/resize", {
         method: "POST",
         body: formData
       });
@@ -65,7 +65,7 @@ export const Options = () => {
     formData.append("direction", direction);
 
     try {
-      const res = await fetch("http://localhost:5500/rotate", {
+      const res = await fetch("/rotate", {
         method: "POST",
         body: formData,
       });
@@ -86,7 +86,7 @@ export const Options = () => {
     formData.append("action", "flip");
 
     try {
-      const res = await fetch("http://localhost:5500/flip", {
+      const res = await fetch("/flip", {
         method: "POST",
         body: formData,
       });
