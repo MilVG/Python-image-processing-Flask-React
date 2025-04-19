@@ -1,0 +1,24 @@
+
+# Python
+venv/
+venv_project_flask/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Environments
+.env
+.env.*
+
+# IDEs
+.vscode/
+.idea/
