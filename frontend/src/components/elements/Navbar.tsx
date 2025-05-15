@@ -1,4 +1,9 @@
+import { useLocation } from "react-router-dom";
+
 export const Navbar = () => {
+
+  const { pathname } = useLocation()
+
   return (
     <header className="sticky top-0 bg-white/30  backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -25,11 +30,11 @@ export const Navbar = () => {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {/* <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
-                <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Procesamiento Imágenes</a>
-                <label className="border-2 border-blue-20 rounded-md p-2">SISTEMAS INTELIGENTES</label>
-                {/* <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Webcam</a> */}
-                {/* <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Detector</a> */}
-                {/* <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a> */}
+                {/* <a href="#" className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Procesamiento Imágenes</a> */}
+                {/* <label className="border-2 border-blue-20 rounded-md p-2">SISTEMAS INTELIGENTES</label> */}
+                <a href="/" className={`${pathname == '/' ? 'border-b-purple-300 border-b-2' : ''} rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}>Procesameinto Imagenes</a>
+                <a href="/Algoritmo-Estrella" className={`${pathname == '/Algoritmo-Estrella' ? 'border-b-purple-300 border-b-2' : ''} rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}>Algoritmo Estrella</a>
+                <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
               </div>
             </div>
           </div>
