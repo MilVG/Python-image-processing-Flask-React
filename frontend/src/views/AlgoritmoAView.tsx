@@ -39,7 +39,7 @@ export default function AlgoritmoAView() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/algoritmoA", {
+      const response = await fetch("/algoritmoA", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
