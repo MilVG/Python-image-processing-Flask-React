@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 import base64
 from PIL import Image
+import heapq
+
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
 template_dir = os.path.join(base_dir, "templates")
@@ -92,6 +94,58 @@ def flip():
     encoded_image = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
     return jsonify({"processed_image": encoded_image})
+
+
+@app.route("/algoritmoA", methods=["POST"])
+def algoritmo_a():
+    data = request.get_json()
+
+    mapa = data["mapa"]
+    inicio = tuple(data["inicio"])  # (fila, columna)
+    fin = tuple(data["fin"])  # (fila, columna)
+
+    camino = a_estrella(mapa, inicio, fin)
+
+    return jsonify({"camino": camino})
+
+
+def a_estrella(mapa, inicio, fin):
+    filas, columnas = len(mapa), len(mapa[0])
+    movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    def heuristica(a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])  # Manhattan
+
+    frontera = []
+    heapq.heappush(frontera, (0, inicio))
+    de_donde = {inicio: None}
+    costo_hasta = {inicio: 0}
+
+    while frontera:
+        _, actual = heapq.heappop(frontera)
+
+        if actual == fin:
+            # reconstruir camino
+            camino = []
+            while actual:
+                camino.append(actual)
+                actual = de_donde[actual]
+            camino.reverse()
+            return camino
+
+        for dx, dy in movimientos:
+            nx, ny = actual[0] + dx, actual[1] + dy
+            vecino = (nx, ny)
+
+            if 0 <= nx < filas and 0 <= ny < columnas and mapa[nx][ny] == 0:
+                nuevo_costo = costo_hasta[actual] + 1
+                if vecino not in costo_hasta or nuevo_costo < costo_hasta[vecino]:
+                    costo_hasta[vecino] = nuevo_costo
+                    prioridad = nuevo_costo + heuristica(fin, vecino)
+                    heapq.heappush(frontera, (prioridad, vecino))
+                    de_donde[vecino] = actual
+
+    return []  # No se encontró camino
 
 
 @app.route("/")
