@@ -155,7 +155,11 @@ def serve_index():
 
 @app.route("/<path:path>")
 def serve_static(path):
-    return send_from_directory(static_dir, path)
+    # Si el archivo existe, se sirve normalmente
+    if os.path.exists(os.path.join(static_dir, path)):
+        return send_from_directory(static_dir, path)
+    # Si no existe, envía index.html para ser manejado por React Router
+    return send_from_directory(static_dir, "index.html")
 
 
 # 🔵 Este bloque reemplaza el anterior
