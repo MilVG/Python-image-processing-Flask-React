@@ -1,12 +1,22 @@
 import io
 import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, Response
 from flask_cors import CORS
 import cv2
 import numpy as np
 import base64
 from PIL import Image
+
+##import Library para algoritmo A*
 import heapq
+
+## Import Library para juego pacman
+import json
+from ..pacmanlogic.a_start import (
+    a_star_search,
+    reconstruct_path,
+)
+from ..pacmanlogic.utils import parse_map
 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
@@ -146,6 +156,100 @@ def a_estrella(mapa, inicio, fin):
                     de_donde[vecino] = actual
 
     return []  # No se encontró camino
+
+
+# Juego pacman
+def custom_jsonify(data):
+    def convert(obj):
+        if isinstance(obj, set):
+            return list(obj)
+        elif isinstance(obj, dict):
+            return {k: convert(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert(i) for i in obj]
+        return obj
+
+    return Response(json.dumps(convert(data)), mimetype="application/json")
+
+
+# Endpoint para enviar el mapa
+@app.route("/map", methods=["GET"])
+def get_map():
+    # Ruta absoluta basada en la ubicación actual de este archivo
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    map_path = os.path.join(
+        base_dir, "..", "maps", "level1.json"
+    )  # retrocede a backend/, luego entra a maps/
+
+    with open(map_path, "r") as f:
+        level_map = json.load(f)
+
+    parsed_data = parse_map(level_map)
+
+    return custom_jsonify({"map": level_map, "entities": parsed_data})
+
+
+# Endpoint enviar el mapa
+@app.route("/solve", methods=["POST"])
+def solve():
+    data = request.get_json()
+
+    grid = data.get("map")
+    start = tuple(data.get("start"))  # por ejemplo: [0, 0]
+    goal = tuple(data.get("goal"))  # por ejemplo: [5, 8]
+
+    if not grid or not start or not goal:
+        return jsonify({"error": "Faltan datos necesarios"}), 400
+
+    parents = a_star_search(grid, start, goal)
+
+    if parents:
+        final_path = reconstruct_path(parents, goal)
+        return jsonify({"path": final_path})
+    else:
+        return jsonify({"path": [], "message": "No se encontró camino"}), 200
+
+
+@app.route("/ghosts", methods=["GET"])
+def move_ghosts():
+    # Cargar el mapa actual
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    map_path = os.path.join(base_dir, "..", "maps", "level1.json")
+
+    with open(map_path, "r") as f:
+        level_map = json.load(f)
+
+    # Buscar todas las posiciones G
+    ghost_positions = []
+    for y, row in enumerate(level_map):
+        for x, cell in enumerate(row):
+            if cell == "G":
+                ghost_positions.append((x, y))
+
+    # Movimientos posibles
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    # Mover cada fantasma aleatoriamente
+    import random
+
+    for x, y in ghost_positions:
+        random.shuffle(directions)
+        for dx, dy in directions:
+            new_x, new_y = x + dx, y + dy
+            if (
+                0 <= new_y < len(level_map)
+                and 0 <= new_x < len(level_map[0])
+                and level_map[new_y][new_x] == "."
+            ):
+                level_map[y][x] = "."  # vacía la celda anterior
+                level_map[new_y][new_x] = "G"  # nueva posición
+                break
+
+    # Guardar el nuevo mapa
+    with open(map_path, "w") as f:
+        json.dump(level_map, f)
+
+    return custom_jsonify({"map": level_map})
 
 
 @app.route("/")
