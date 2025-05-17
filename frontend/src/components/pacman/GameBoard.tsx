@@ -11,7 +11,7 @@ export default function GameBoard() {
   const [pacmanPos, setPacmanPos] = useState<Position | null>(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/map")
+    fetch("/map")
       .then((res) => res.json())
       .then((data) => {
         setMap(data.map);
@@ -21,7 +21,7 @@ export default function GameBoard() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://127.0.0.1:5000/ghosts")
+      fetch("/ghosts")
         .then((res) => res.json())
         .then((data) => {
           setMap(data.map);
