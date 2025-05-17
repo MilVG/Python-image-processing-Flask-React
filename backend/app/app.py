@@ -12,11 +12,11 @@ import heapq
 
 ## Import Library para juego pacman
 import json
-from ..pacmanlogic.a_start import (
+from pacmanlogic.a_start import (
     a_star_search,
     reconstruct_path,
 )
-from ..pacmanlogic.utils import parse_map
+from pacmanlogic.utils import parse_map
 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
