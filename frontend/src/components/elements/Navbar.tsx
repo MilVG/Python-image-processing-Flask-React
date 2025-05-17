@@ -34,7 +34,8 @@ export const Navbar = () => {
                 {/* <label className="border-2 border-blue-20 rounded-md p-2">SISTEMAS INTELIGENTES</label> */}
                 <Link to="/" className={`${pathname == '/' ? 'border-b-purple-300 border-b-2' : ''} rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}>Procesameinto Imagenes</Link>
                 <Link to="/Algoritmo-Estrella" className={`${pathname == '/Algoritmo-Estrella' ? 'border-b-purple-300 border-b-2' : ''} rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white`}>Algoritmo Estrella</Link>
-                <Link to="#" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</Link>
+                <Link to="/Juego-Pacman" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pacman</Link>
+                <Link to="/Pacman-Emoji" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Pacman-Emoji</Link>
               </div>
             </div>
           </div>
